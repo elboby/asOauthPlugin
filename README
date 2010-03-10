@@ -7,9 +7,9 @@ Overview
 
 The `asOauthPlugin` is a symfony (1.4.x) plugin that provides an easy way to authenticate the user against any Oauth providers.
 
-It is easily configurable and extendable to meet any need.
+It is easily configurable and extendable to meet any need. Like for example authenticate the user against Twitter or send some check-in to Foursquare.
 
-The plugin provides a module that takes care of contacting correctly the provider and catch their callback when successfull.
+The plugin provides a module that takes care of contacting correctly the provider and catch their callback when successful.
 
 The plugin requires the `oauth` library from PECL to function properly. (http://pecl.php.net/package/oauth)
 
@@ -46,11 +46,12 @@ There are usually different options; specify that the application is web based a
 
 
 With this data (the 2 tokens and the 3 urls), you can now edit the oauth.yml file from your root config folder.
-The service name is a reference used to specify which configuration you are going to use. It is used in the callback url given to the provider.
-But also to the the login which redirects the user to the provider for authentication.
+The service name is a reference which specifies the configuration you are going to use. It is sent to the callback url given to the provider.
+But also to the login which redirects the user to the provider for authentication.
 
 For example, you can add this in a template:
-<?php echo link_to(image_tag('twitter-connect.png'), '@oauthSignIn?service=twitter') ?>
+<?php $service_name = "twitter" ?>
+<?php echo link_to(image_tag('twitter-connect.png'), '@oauthSignIn?service='.$service_name) ?>
 
 
 The last part to setup in the oauth.yaml is the callback class to handle the success of the authentication.
