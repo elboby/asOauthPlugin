@@ -59,11 +59,7 @@ class oauthConnectActions extends sfActions
     
     call_user_func_array(
         array($this->config_service['connector_callback']['class'], $this->config_service['connector_callback']['method']),
-        array(
-            $this->service,
-            $this->oauthUser,
-            $this->config_service
-          )
+        array($this->oauthUser, $this->config_service)
       );
   }
 }

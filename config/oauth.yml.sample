@@ -1,0 +1,38 @@
+all:
+  services:
+
+		# name of the service
+    foursquare:
+
+			# connection tokens
+      key:      ~
+      secret:   ~
+
+			# urls for the different services
+      url:
+        request_token: http://foursquare.com/oauth/request_token
+        access_token:  http://foursquare.com/oauth/access_token
+        authorize:     http://foursquare.com/oauth/authorize
+
+			# static method to call after successful oauth login
+			# method should take those arguments:
+			# object - the instance of myUserOauth (composite of sf_user) 
+			# array - configuration of the service 
+      connector_callback:
+        class:         my4sqConnector
+        method:        registerUser
+
+
+
+		# another service
+    twitter:
+      key:      ~
+      secret:   ~
+      url:
+        request_token: http://twitter.com/oauth/request_token
+        access_token:  http://twitter.com/oauth/access_token
+        authorize:     http://twitter.com/oauth/authorize
+      connector_callback:
+        class:         myTwitterConnector
+        method:        registerUser
+    

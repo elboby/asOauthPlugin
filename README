@@ -1,0 +1,106 @@
+asOauthPlugin
+=============
+
+
+Overview
+--------
+
+The `asOauthPlugin` is a symfony (1.4.x) plugin that provides an easy way to authenticate the user against any Oauth providers.
+
+It is easily configurable and extendable to meet any need.
+
+The plugin provides a module that takes care of contacting correctly the provider and catch their callback when successfull.
+
+The plugin requires the `oauth` library from PECL to function properly. (http://pecl.php.net/package/oauth)
+
+
+Installation
+------------
+
+- Clone the repository inside the plugins folder.
+- Enable the plugin `asOauthPlugin` in the application configuration class.
+- Enable the module `oauthConnect` in the application settings yaml file.
+- Copy the file oauth.yml.sample in the root config folder of your project. Rename it as oauth.yml.
+- Add the routes in the application routing yaml file.
+
+For example:
+
+oauthSignIn:
+  url:   /oauth/login
+  param: { module: oauthConnect, action: index }
+oauthCallback:
+  url:   /oauth/callback
+  param: { module: oauthConnect, action: callback }
+
+
+Usage
+-----
+
+You need to register your application to the provider by giving the complete URL to your route oauthConnect/callback at least.
+Don't forget the service name to specify which provider is used.
+
+For example: http://example.com/oauth/callback/?service=twitter
+
+The provider should then give you back the consumer tokens (secret and key) and the 3 different urls for its callbacks (request, access, authorize).
+There are usually different options; specify that the application is web based and will used the provider for authentication.
+
+
+With this data (the 2 tokens and the 3 urls), you can now edit the oauth.yml file from your root config folder.
+The service name is a reference used to specify which configuration you are going to use. It is used in the callback url given to the provider.
+But also to the the login which redirects the user to the provider for authentication.
+
+For example, you can add this in a template:
+<?php echo link_to(image_tag('twitter-connect.png'), '@oauthSignIn?service=twitter') ?>
+
+
+The last part to setup in the oauth.yaml is the callback class to handle the success of the authentication.
+Basically you need to store some data in the session to authenticate the user or in a database to keep it available for later.
+
+For example, for this configuration:
+      ...
+			connector_callback:
+        class:         TwitterConnector
+        method:        registerUser
+
+This class will be called:
+<?php
+
+class TwitterConnector
+{
+  static public function registerUser($oauthUser, $service_config)
+  {
+
+    //retrieve data
+    $mdc = new TwitterDataAccess( $service_config );
+    $mdc->init( $oauthUser->getOauthTokens() );
+    $data = $mdc->getUserInfo();
+    
+    //authenticate the user and store some data in session
+    $oauthUser->getUser()->signIn(
+      (int)$data->user->id, 
+      (string)$data->user->twitter
+    );
+    
+    //persistent storage
+		//the tokens from $oauthUser->getOauthTokens() can be stored at this time to allow offline requests
+    ...
+  }
+}
+
+
+Tips
+----
+
+The class `myOauthBase` can be extended and used to make oauth requests easily. 
+Those requests can be done offline if the tokens are stored in a database for example.
+
+
+
+TODO
+----
+
+- Use dependency injection with lazy loading instead of configuration + call_user_function_array.
+- Add unit test.
+- Better service management with default classes.
+- ...
+
