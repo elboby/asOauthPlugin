@@ -7,7 +7,7 @@ Overview
 
 The `asOauthPlugin` is a symfony (1.4.x) plugin that provides an easy way to authenticate the user against any Oauth providers.
 
-It is easily configurable and extendable to meet any need. Like for example authenticate the user against Twitter or send some check-in to Foursquare.
+It is easily configurable and extendable to meet any need. Like for example authenticate the user against Twitter or send some check-ins to Foursquare.
 
 The plugin provides a module that takes care of contacting correctly the provider and catch their callback when successful.
 
